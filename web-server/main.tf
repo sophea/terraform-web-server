@@ -20,14 +20,16 @@ resource "aws_instance" "web_server" {
     private_key  = "${file("~/.ssh/id_rsa")}"
   }
 
+
+  provisioner "file" {
+    source = "package-install.sh"
+    destination = "/home/ubuntu/package-install.sh"
+  }
+
   provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get install openjdk-8-jre-headless -y",
-      "sudo apt-get install apache2 -y",
-      "sudo systemctl enable apache2",
-      "sudo systemctl start apache2",
-      "sudo chmod 777 /var/www/html/index.html"
+     inline = [
+      "sudo chmod +x /home/ubuntu/package-install.sh",
+      "sudo sh /home/ubuntu/package-install.sh",
     ]
   }
 
